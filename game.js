@@ -12,9 +12,9 @@ const TILE_COUNT = canvas.width / GRID_SIZE;
 
 // 难度等级对应的速度（毫秒）
 const DIFFICULTY_SPEEDS = {
-    easy: 150,      // 简单：150ms（较慢）
-    normal: 100,    // 普通：100ms（中等）
-    hard: 60        // 困难：60ms（较快）
+    easy: 300,      // 简单：300ms（较慢）
+    normal: 200,    // 普通：200ms（中等）
+    hard: 120       // 困难：120ms（较快）
 };
 
 let currentDifficulty = 'easy'; // 默认简单难度
