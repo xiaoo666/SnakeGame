@@ -9,7 +9,16 @@ const restartBtn = document.getElementById('restartBtn');
 
 const GRID_SIZE = 20;
 const TILE_COUNT = canvas.width / GRID_SIZE;
-const GAME_SPEED = 100; // 毫秒
+
+// 难度等级对应的速度（毫秒）
+const DIFFICULTY_SPEEDS = {
+    easy: 150,      // 简单：150ms（较慢）
+    normal: 100,    // 普通：100ms（中等）
+    hard: 60        // 困难：60ms（较快）
+};
+
+let currentDifficulty = 'easy'; // 默认简单难度
+let gameSpeed = DIFFICULTY_SPEEDS[currentDifficulty];
 
 // 游戏状态
 let snake = [];
@@ -193,11 +202,16 @@ function startGame() {
         startBtn.disabled = true;
         pauseBtn.disabled = false;
 
+        // 禁用难度选择按钮
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.disabled = true;
+        });
+
         if (gameLoop) {
             clearInterval(gameLoop);
         }
 
-        gameLoop = setInterval(moveSnake, GAME_SPEED);
+        gameLoop = setInterval(moveSnake, gameSpeed);
     }
 }
 
@@ -217,7 +231,7 @@ function pauseGame() {
     } else if (isPaused) {
         isPaused = false;
         pauseBtn.textContent = '暂停';
-        gameLoop = setInterval(moveSnake, GAME_SPEED);
+        gameLoop = setInterval(moveSnake, gameSpeed);
     }
 }
 
@@ -236,6 +250,11 @@ function restartGame() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     pauseBtn.textContent = '暂停';
+
+    // 启用难度选择按钮
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.disabled = false;
+    });
 }
 
 // 键盘控制
@@ -268,6 +287,25 @@ document.addEventListener('keydown', (e) => {
             }
             break;
     }
+});
+
+// 难度选择事件
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (gameStarted) return; // 游戏进行中不允许切换难度
+
+        // 移除所有按钮的 active 类
+        document.querySelectorAll('.difficulty-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+
+        // 添加当前按钮的 active 类
+        this.classList.add('active');
+
+        // 更新难度和速度
+        currentDifficulty = this.dataset.difficulty;
+        gameSpeed = DIFFICULTY_SPEEDS[currentDifficulty];
+    });
 });
 
 // 按钮事件
